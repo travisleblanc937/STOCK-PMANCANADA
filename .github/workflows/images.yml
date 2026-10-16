@@ -1,0 +1,30 @@
+name: Refresh card photos
+on:
+  push:
+    paths: ["stock.json"]
+  schedule:
+    - cron: "40 12 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: images
+  cancel-in-progress: false
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/fetch_images.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet images.json; then echo "No photo changes"; exit 0; fi
+          git config user.name "stock-bot"
+          git config user.email "stock-bot@users.noreply.github.com"
+          git add images.json
+          git commit -m "Refresh card photos"
+          git pull --rebase origin main
+          git push

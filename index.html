@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Pokémon and One Piece singles in stock at POKEMANCANADA, with prices.">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>POKEMANCANADA Stock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: customer-facing price list. Sticky header with search + filters, one-column list of card rows, each row ends in a yellow price sticker and a buy link. */
+:root{
+  --bg:#EEF0F6; --surface:#FFFFFF; --sunk:#E3E6EF; --line:#D3D7E3; --ink:#131726; --muted:#596178;
+  --accent:#2445E6; --accent-ink:#FFFFFF; --sticker:#FFD23F; --sticker-ink:#2A2100;
+  --poke:#D6402F; --op:#1F7A8C; --custom:#8A5CD6; --good:#13805A; --warn:#A86A10; --bad:#C1342C; --slab:#6646D6;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1017; --surface:#171A24; --sunk:#11131B; --line:#2A2F3F; --ink:#E8EBF3; --muted:#9AA1B6;
+  --accent:#8297FF; --accent-ink:#0B0E1A; --sticker:#FFD23F; --sticker-ink:#2A2100;
+  --poke:#F07A6A; --op:#5CC3D6; --custom:#B89AF5; --good:#4BC48F; --warn:#E6B04B; --bad:#F2716A; --slab:#AA96FF; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1017; --surface:#171A24; --sunk:#11131B; --line:#2A2F3F; --ink:#E8EBF3; --muted:#9AA1B6;
+  --accent:#8297FF; --accent-ink:#0B0E1A; --sticker:#FFD23F; --sticker-ink:#2A2100;
+  --poke:#F07A6A; --op:#5CC3D6; --custom:#B89AF5; --good:#4BC48F; --warn:#E6B04B; --bad:#F2716A; --slab:#AA96FF; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* header */
+.hero{padding-block:22px 6px}
+.mark{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(34px,9vw,52px);line-height:.9;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+.mark span{color:var(--accent)}
+.tag{margin:8px 0 0;color:var(--muted);max-width:52ch}
+.tag a{color:var(--accent);font-weight:600}
+.facts{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:13px;color:var(--muted)}
+.facts b{color:var(--ink);font-family:var(--mono);font-weight:600}
+
+header.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding-block:10px}
+.search{display:flex;gap:8px}
+.search input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-height:44px;font-size:16px}
+.search select{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 10px;min-height:44px;max-width:44%}
+.chips{display:flex;gap:6px;margin-top:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.fchip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer}
+.fchip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.fchip .c{font-family:var(--mono);font-size:12px;opacity:.75;margin-left:4px}
+
+/* list */
+main{padding-block:12px 40px}
+.count{font-size:13px;color:var(--muted);margin:0 0 8px}
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 12px;border-top:1px solid var(--line);content-visibility:auto;contain-intrinsic-size:auto 72px}
+.row:first-child{border-top:0}
+.spine{--g:var(--poke);width:40px;height:56px;border-radius:4px;border:1.5px solid color-mix(in srgb,var(--g) 55%,var(--line));background:color-mix(in srgb,var(--g) 10%,var(--sunk));display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:11px;line-height:1.05;color:var(--g);text-align:center;overflow:hidden;padding:2px;overflow-wrap:anywhere}
+.spine.op{--g:var(--op)} .spine.custom{--g:var(--custom)}
+.pic{width:52px;height:72px;padding:0;border:1px solid var(--line);border-radius:4px;background:var(--sunk);overflow:hidden;cursor:zoom-in;display:block}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.row.has-pic{grid-template-columns:52px minmax(0,1fr) auto}
+.row.has-pic .spine{display:none}
+.viewer{position:fixed;inset:0;z-index:50;background:rgba(6,8,16,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.viewer img{max-width:min(100%,460px);max-height:calc(100% - 96px);object-fit:contain;border-radius:8px;background:#11131B}
+.viewer .cap{color:#E8EBF3;text-align:center;font-weight:600;max-width:46ch}
+.viewer .cap .sticker{display:inline-block;margin-left:6px}
+.viewer .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));width:44px;height:44px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;font-size:22px;line-height:1;cursor:pointer}
+.main{min-width:0}
+.nm{font-weight:700;font-size:15.5px;line-height:1.25;overflow-wrap:anywhere}
+.sub{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.t{--c:var(--muted);font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent);white-space:nowrap}
+.t.NM,.t.LP{--c:var(--good)} .t.MP,.t.HP{--c:var(--warn)} .t.DMG{--c:var(--bad)} .t.slab{--c:var(--slab)} .t.new{--c:var(--accent)}
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
+.sticker{background:var(--sticker);color:var(--sticker-ink);font-family:var(--mono);font-weight:600;font-size:14.5px;padding:3px 8px;border-radius:4px;transform:rotate(-1.5deg);box-shadow:0 1px 0 rgba(0,0,0,.15);white-space:nowrap}
+.sticker.ask{background:var(--sunk);color:var(--muted);transform:none;box-shadow:none;font-family:var(--body);font-size:13px}
+.qty{font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.buy{font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;white-space:nowrap}
+.buy:hover{text-decoration:underline;text-underline-offset:3px}
+.at-show{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:28px 20px;text-align:center;color:var(--muted)}
+.empty h2{margin:0 0 6px;font-family:var(--display);font-size:22px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink)}
+.empty p{margin:0 auto;max-width:44ch}
+.more{display:block;width:100%;margin-top:12px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px;min-height:44px;font-weight:700;cursor:pointer}
+footer{border-top:1px solid var(--line);padding-block:18px 28px;font-size:13px;color:var(--muted)}
+footer p{margin:0 0 6px;max-width:60ch}
+footer a{color:var(--accent);font-weight:600}
+@media (max-width:420px){.row{gap:10px}.spine{width:34px;height:48px;font-size:10px}.row{grid-template-columns:34px minmax(0,1fr) auto}.pic{width:46px;height:64px}.row.has-pic{grid-template-columns:46px minmax(0,1fr) auto}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap hero">
+  <h1 class="mark">Pokeman<span>canada</span></h1>
+  <p class="tag">Singles I have for sale right now, with my prices. Tap a photo to see the card up close, tap <b>Buy online</b> to grab a card from <a href="https://www.pokemancanada.com" target="_blank" rel="noopener">pokemancanada.com</a>, or ask for it at my table at the next card show.</p>
+  <div class="facts" id="facts"><span>Loading stock…</span></div>
+</div>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="search">
+      <input id="q" type="search" placeholder="Search name, set or number" aria-label="Search cards" autocomplete="off">
+      <select id="sort" aria-label="Sort cards">
+        <option value="new">Newest</option>
+        <option value="hi">Price: high to low</option>
+        <option value="lo">Price: low to high</option>
+        <option value="az">Name A–Z</option>
+      </select>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filter cards"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="count" id="count"></p>
+  <div id="list"><div class="empty"><h2>Loading stock</h2><p>Pulling up the cards I have in stock…</p></div></div>
+</main>
+
+<footer class="wrap">
+  <p>All prices in Canadian dollars. Stock updates once a day, so a card sold at a show may still show here until the next update.</p>
+  <p id="updated"></p>
+</footer>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=new Intl.NumberFormat('en-CA',{style:'currency',currency:'CAD'});
+const STORE='https://www.pokemancanada.com/products/';
+const PAGE=60;
+let cards=[],shown=PAGE,current=[],lastFocus=null,imgs={};
+const sized=(u,w)=>u?(u+(u.includes('?')?'&':'?')+'width='+w):'';
+const ui={q:'',sort:'new',f:'all'};
+try{const s=localStorage.getItem('pcs.sort');if(s)ui.sort=s;}catch(e){}
+$('#sort').value=ui.sort;
+
+const FILTERS=[
+  ['all','All',()=>true],
+  ['Pokemon','Pokémon',c=>c.gm==='Pokemon'],
+  ['One Piece','One Piece',c=>c.gm==='One Piece'],
+  ['jp','Japanese',c=>c.l==='JP'],
+  ['graded','Graded',c=>!!c.g],
+  ['u20','Under $20',c=>c.p>0&&c.p<20],
+  ['Custom','Custom',c=>c.gm==='Custom'],
+];
+function gameCls(c){return c.gm==='One Piece'?'op':c.gm==='Custom'?'custom':'';}
+function daysAgo(iso){if(!iso)return 99;return (Date.now()-new Date(iso+'T12:00:00').getTime())/864e5;}
+
+function renderChips(){
+  $('#chips').innerHTML=FILTERS.map(([k,label,fn])=>{
+    const n=cards.filter(fn).length;if(!n&&k!=='all')return '';
+    return '<button class="fchip" data-f="'+esc(k)+'" aria-pressed="'+(ui.f===k)+'">'+esc(label)+'<span class="c">'+n+'</span></button>';
+  }).join('');
+}
+function filtered(){
+  const fn=(FILTERS.find(f=>f[0]===ui.f)||FILTERS[0])[2];
+  const words=ui.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const arr=cards.filter(c=>{
+    if(!fn(c))return false;
+    if(!words.length)return true;
+    const hay=[c.n,c.s,c.no,c.g,c.c,c.gm,c.l==='JP'?'japanese jp':''].join(' ').toLowerCase();
+    return words.every(w=>hay.includes(w));
+  });
+  const by={
+    new:(a,b)=>String(b.a).localeCompare(String(a.a)),
+    hi:(a,b)=>(b.p||0)-(a.p||0),
+    lo:(a,b)=>((a.p||1e9)-(b.p||1e9)),
+    az:(a,b)=>String(a.n).localeCompare(String(b.n)),
+  };
+  return arr.sort(by[ui.sort]||by.new);
+}
+function row(c,idx){
+  const sub=[c.s,c.no?('#'+String(c.no).replace(/^#/,'')):''].filter(Boolean).join(' · ');
+  const tags=[];
+  if(c.g)tags.push('<span class="t slab">'+esc(c.g)+'</span>');else if(c.c)tags.push('<span class="t '+esc(c.c)+'">'+esc(c.c)+'</span>');
+  if(c.l==='JP')tags.push('<span class="t">Japanese</span>');else if(c.l&&c.l!=='EN')tags.push('<span class="t">Non-English</span>');
+  if(c.gm==='One Piece')tags.push('<span class="t">One Piece</span>');else if(c.gm==='Custom')tags.push('<span class="t">Custom print</span>');
+  if(daysAgo(c.a)<=7)tags.push('<span class="t new">New</span>');
+  const spine=(c.no||c.s||c.gm||'').toString().slice(0,9);
+  const price=c.p>0?'<span class="sticker">'+money.format(c.p)+'</span>':'<span class="sticker ask">Ask me</span>';
+  const act=c.h?'<a class="buy" href="'+STORE+encodeURIComponent(c.h)+'" target="_blank" rel="noopener">Buy online →</a>':'<span class="at-show">At my table</span>';
+  const spineEl='<span class="spine '+gameCls(c)+'" aria-hidden="true">'+esc(spine)+'</span>';
+  const lead=c.i?'<button class="pic" data-pic="'+idx+'" aria-label="See photo of '+esc(c.n||'card')+'"><img src="'+esc(sized(c.i,160))+'" alt="" loading="lazy" decoding="async" onerror="var r=this.closest(\'.row\');if(r){r.classList.remove(\'has-pic\');}this.parentNode.remove();"></button>'+spineEl:spineEl;
+  return '<div class="row'+(c.i?' has-pic':'')+'">'+lead+
+    '<div class="main"><div class="nm">'+esc(c.n||'Card')+'</div>'+(sub?'<div class="sub">'+esc(sub)+'</div>':'')+
+    (tags.length?'<div class="tags">'+tags.join('')+'</div>':'')+'</div>'+
+    '<div class="right">'+price+'<span class="qty">'+(c.q>1?c.q+' available':'1 left')+'</span>'+act+'</div></div>';
+}
+function renderList(){
+  const arr=filtered();
+  const copies=arr.reduce((n,c)=>n+c.q,0);
+  $('#count').textContent=arr.length===cards.length?'':(arr.length+' card'+(arr.length===1?'':'s')+' · '+copies+' cop'+(copies===1?'y':'ies'));
+  if(!arr.length){$('#list').innerHTML='<div class="empty"><h2>Nothing matches</h2><p>No cards fit that search. Try a different name or set, or tap All.</p></div>';return;}
+  const slice=arr.slice(0,shown);
+  current=slice;
+  $('#list').innerHTML='<div class="list">'+slice.map((c,i)=>row(c,i)).join('')+'</div>'+
+    (arr.length>shown?'<button class="more" id="more">Show more ('+(arr.length-shown)+' left)</button>':'');
+}
+function renderFacts(updated){
+  const copies=cards.reduce((n,c)=>n+c.q,0);
+  const priced=cards.filter(c=>c.p>0).map(c=>c.p);
+  const lo=priced.length?Math.min(...priced):0,hi=priced.length?Math.max(...priced):0;
+  $('#facts').innerHTML='<span><b>'+cards.length+'</b> cards</span><span><b>'+copies+'</b> copies</span>'+
+    (priced.length?'<span>From <b>'+money.format(lo)+'</b> to <b>'+money.format(hi)+'</b></span>':'');
+  if(updated){const d=new Date(updated);$('#updated').textContent='Stock last updated '+d.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'})+' at '+d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'})+'.';}
+}
+
+function closeViewer(){const v=$('#viewer');if(v)v.remove();document.body.style.overflow='';if(lastFocus){try{lastFocus.focus();}catch(_){}}}
+function openViewer(c,btn){
+  lastFocus=btn;closeViewer();lastFocus=btn;
+  const sub=[c.s,c.no?('#'+String(c.no).replace(/^#/,'')):'',c.g||c.c].filter(Boolean).join(' · ');
+  const price=c.p>0?'<span class="sticker">'+money.format(c.p)+'</span>':'';
+  const buy=c.h?'<a class="buy" style="color:#A9B8FF" href="'+STORE+encodeURIComponent(c.h)+'" target="_blank" rel="noopener">Buy online →</a>':'';
+  const v=document.createElement('div');v.className='viewer';v.id='viewer';v.setAttribute('role','dialog');v.setAttribute('aria-modal','true');v.setAttribute('aria-label',c.n||'Card photo');
+  v.innerHTML='<button class="x" data-close aria-label="Close photo">×</button><img src="'+esc(sized(c.i,900))+'" alt="'+esc(c.n||'Card')+'">'+
+    '<div class="cap">'+esc(c.n||'Card')+price+(sub?'<div style="font-weight:400;opacity:.8;margin-top:2px">'+esc(sub)+'</div>':'')+(buy?'<div style="margin-top:6px">'+buy+'</div>':'')+'</div>';
+  document.body.appendChild(v);document.body.style.overflow='hidden';v.querySelector('.x').focus();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#viewer'))closeViewer();});
+document.addEventListener('click',e=>{
+  const v=$('#viewer');
+  if(v&&(e.target===v||e.target.closest('[data-close]'))){closeViewer();return;}
+  const p=e.target.closest('[data-pic]');if(p){const c=current[+p.dataset.pic];if(c&&c.i)openViewer(c,p);return;}
+  const f=e.target.closest('[data-f]');if(f){ui.f=f.dataset.f;shown=PAGE;renderChips();renderList();return;}
+  if(e.target.id==='more'){shown+=PAGE*2;renderList();}
+});
+let t;$('#q').addEventListener('input',e=>{clearTimeout(t);t=setTimeout(()=>{ui.q=e.target.value;shown=PAGE;renderList();},120);});
+$('#sort').addEventListener('change',e=>{ui.sort=e.target.value;shown=PAGE;try{localStorage.setItem('pcs.sort',ui.sort);}catch(_){}renderList();});
+
+Promise.all([
+  fetch('stock.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();}),
+  fetch('images.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).catch(()=>({}))
+]).then(([d,im])=>{
+  imgs=im||{};
+  cards=((d&&d.cards)||[]).map(c=>Object.assign({},c,{i:(c.h&&imgs[c.h])||''}));renderFacts(d&&d.updated);renderChips();
+  if(!cards.length){$('#list').innerHTML='<div class="empty"><h2>Restocking</h2><p>Nothing listed right now. Check back soon or visit pokemancanada.com.</p></div>';return;}
+  renderList();
+}).catch(()=>{
+  $('#facts').innerHTML='';
+  $('#list').innerHTML='<div class="empty"><h2>Couldn’t load stock</h2><p>Check your connection and reload the page. You can also browse <a href="https://www.pokemancanada.com" target="_blank" rel="noopener">pokemancanada.com</a>.</p></div>';
+});
+})();
+</script>
+
+</body>
+</html>
